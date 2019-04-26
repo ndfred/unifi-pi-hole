@@ -17,7 +17,7 @@ AD_LISTS = [
     ('Hosts-file.net Ads', 'https://hosts-file.net/ad_servers.txt'),
 ]
 
-DOMAIN_EXPR = re.compile(r'^[a-zA-Z0-9\.\-]+$')
+DOMAIN_EXPR = re.compile(r'^[a-zA-Z0-9\.\-_]+$')
 ZERO_IP_PREFIXES = ('0.0.0.0 ', '127.0.0.1 ')
 INVALID_DOMAINS = frozenset(('localhost', '0.0.0.0'))
 
@@ -30,6 +30,7 @@ def cleanup_domain_line(line):
     return line
 
 def parse_domain_line(line):
+    original_line = line
     line = cleanup_domain_line(line)
     domain = None
 
@@ -42,6 +43,9 @@ def parse_domain_line(line):
 
                 if domain in INVALID_DOMAINS:
                     domain = None
+
+    # if original_line and domain is None and not original_line.startswith('#'):
+    #     print original_line.decode('utf8')
 
     return domain
 

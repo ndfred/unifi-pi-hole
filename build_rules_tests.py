@@ -12,6 +12,7 @@ class TestDomainParsing(unittest.TestCase):
         self.assertTrue(DOMAIN_EXPR.match('my-google.com'))
         self.assertTrue(DOMAIN_EXPR.match('sub.my-google.com'))
         self.assertTrue(DOMAIN_EXPR.match('sub.google.com'))
+        self.assertTrue(DOMAIN_EXPR.match('927697--storno-sicher-konto_identity.sicherheitsvorbeugung-schutz.cf'))
 
     def test_cleanup_domain_line(self):
         self.assertEqual(cleanup_domain_line(' '), '')
