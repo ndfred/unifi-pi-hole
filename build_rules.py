@@ -5,6 +5,16 @@ import sys
 import urllib2
 import re
 
+# See appendToListsFile in https://github.com/pi-hole/pi-hole/blob/master/automated%20install/basic-install.sh
+AD_LISTS = [
+    ('StevenBlack\'s Unified Hosts List', 'https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts'),
+    ('MalwareDomains', 'https://mirror1.malwaredomains.com/files/justdomains'),
+    ('Cameleon', 'http://sysctl.org/cameleon/hosts'),
+    ('ZeusTracker', 'https://zeustracker.abuse.ch/blocklist.php?download=domainblocklist'),
+    ('Disconnect.me Tracking', 'https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt'),
+    ('Disconnect.me Ads', 'https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt'),
+    ('Hosts-file.net Ads', 'https://hosts-file.net/ad_servers.txt'),
+]
 # See https://v.firebog.net/hosts/lists.php
 FIREBOG_CONSERVATIVE_URLS_LIST = 'https://v.firebog.net/hosts/lists.php?type=tick'
 DOMAIN_EXPR = re.compile(r'^[a-zA-Z0-9\.\-_]+$')
@@ -88,7 +98,8 @@ def parse_host_file(url):
         raise Exception('Couldn\'t find any domains in URL %s' % url)
 
 def output_hosts(ads_lists_ulrs=FIREBOG_CONSERVATIVE_URLS_LIST, output_hosts_path=OUTPUT_HOSTS_PATH, output_domains_path=OUTPUT_DOMAINS_PATH, blackhole_ip=BLACKHOLE_IP):
-    ads_lists = download_ads_list_urls(ads_lists_ulrs)
+    # ads_lists = download_ads_list_urls(ads_lists_ulrs)
+    ads_lists = AD_LISTS
     domains = []
 
     for name, url in ads_lists:
