@@ -17,7 +17,7 @@ AD_LISTS = [
     ('Hosts-file.net Ads', 'https://hosts-file.net/ad_servers.txt'),
 ]
 
-DOMAIN_EXPR = re.compile(r'^[a-zA-Z0-9\.\-_]+$')
+DOMAIN_EXPR = re.compile(r'^[a-zA-Z0-9\.\-]+$')
 ZERO_IP_PREFIXES = ('0.0.0.0 ', '127.0.0.1 ', '0 ', ':: ')
 INVALID_DOMAINS = frozenset(('localhost', '0.0.0.0'))
 
@@ -65,8 +65,8 @@ def parse_host_file(url):
 def output_rules(configuration_script_path):
     prefix = 'service dns forwarding blacklist'
     domains_buffer = []
-    # ads_lists = AD_LISTS
-    ads_lists = download_ads_list_urls('https://v.firebog.net/hosts/lists.php?type=tick')
+    ads_lists = AD_LISTS
+    # ads_lists = download_ads_list_urls('https://v.firebog.net/hosts/lists.php?type=tick')
 
     for name, url in ads_lists:
         print 'Parsing %s' % name
