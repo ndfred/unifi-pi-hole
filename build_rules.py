@@ -65,8 +65,8 @@ def parse_host_file(url):
 def output_rules(configuration_script_path):
     prefix = 'service dns forwarding blacklist'
     domains_buffer = []
-    ads_lists = AD_LISTS
-    # ads_lists = download_ads_list_urls('https://v.firebog.net/hosts/lists.php?type=tick')
+    # ads_lists = AD_LISTS
+    ads_lists = download_ads_list_urls('https://v.firebog.net/hosts/lists.php?type=tick')
 
     for name, url in ads_lists:
         print 'Parsing %s' % name
