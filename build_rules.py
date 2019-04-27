@@ -18,8 +18,14 @@ AD_LISTS = [
 ]
 
 DOMAIN_EXPR = re.compile(r'^[a-zA-Z0-9\.\-_]+$')
-ZERO_IP_PREFIXES = ('0.0.0.0 ', '127.0.0.1 ')
+ZERO_IP_PREFIXES = ('0.0.0.0 ', '127.0.0.1 ', '0 ', ':: ')
 INVALID_DOMAINS = frozenset(('localhost', '0.0.0.0'))
+
+def download_file(url):
+    return urllib2.urlopen(url).read()
+
+def download_ads_list_urls(url):
+    return [(list_url, list_url) for list_url in download_file(url).split('\n')]
 
 def cleanup_domain_line(line):
     if '#' in line:
@@ -49,9 +55,6 @@ def parse_domain_line(line):
 
     return domain
 
-def download_file(url):
-    return urllib2.urlopen(url).read()
-
 def parse_host_file(url):
     for line in download_file(url).split('\n'):
         domain = parse_domain_line(line)
@@ -62,8 +65,10 @@ def parse_host_file(url):
 def output_rules(configuration_script_path):
     prefix = 'service dns forwarding blacklist'
     domains_buffer = []
+    ads_lists = AD_LISTS
+    # ads_lists = download_ads_list_urls('https://v.firebog.net/hosts/lists.php?type=tick')
 
-    for name, url in AD_LISTS:
+    for name, url in ads_lists:
         print 'Parsing %s' % name
 
         for domain in parse_host_file(url):
