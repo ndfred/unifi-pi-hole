@@ -54,17 +54,24 @@ def parse_domain_line(line):
                 if domain in INVALID_DOMAINS:
                     domain = None
 
+    # Uncomment to visually debug unmatched lines and make sure we parse all hosts
     # if original_line and domain is None and not original_line.startswith('#'):
     #     print original_line.decode('utf8')
 
     return domain
 
 def parse_host_file(url):
+    found_domains = False
+
     for line in download_file(url).split('\n'):
         domain = parse_domain_line(line)
 
         if domain:
+            found_domains = True
             yield domain
+
+    if not found_domains:
+        raise Exception('Couldn\'t find any domains in that URL')
 
 def output_rules(configuration_script_path):
     prefix = 'service dns forwarding blacklist'
