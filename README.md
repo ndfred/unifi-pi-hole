@@ -20,7 +20,7 @@ You can then copy the `configure.sh` script to your [Unifi Security Gateway](htt
 
 The lists come from the [Pi-hole installation script](https://github.com/pi-hole/pi-hole/blob/master/automated%20install/basic-install.sh), I may tweak it from [other sources](https://firebog.net) in the future.
 
-## Testing [![Build Status](https://travis-ci.com/ndfred/unifi-pi-hole.png?branch=master)](https://travis-ci.com/ndfred/unifi-pi-hole/)
+## Testing [![Build Status](https://img.shields.io/travis/ndfred/unifi-pi-hole.svg?branch=master)](https://travis-ci.com/ndfred/unifi-pi-hole/)
 
 Just run the test script:
 
