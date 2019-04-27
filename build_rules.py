@@ -117,8 +117,8 @@ def remove_duplicate_domains(domains):
     return sorted(list(top_level_domains.union(filtered_hosts)))
 
 def output_hosts(ads_lists_ulrs=FIREBOG_CONSERVATIVE_URLS_LIST, output_blacklist_path=OUTPUT_BLACKLIST_PATH):
-    # ads_lists = download_ads_list_urls(ads_lists_ulrs)
-    ads_lists = AD_LISTS
+    ads_lists = download_ads_list_urls(ads_lists_ulrs)
+    # ads_lists = AD_LISTS
     domains = []
 
     for name, url in ads_lists:
