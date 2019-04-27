@@ -20,9 +20,7 @@ FIREBOG_CONSERVATIVE_URLS_LIST = 'https://v.firebog.net/hosts/lists.php?type=tic
 DOMAIN_EXPR = re.compile(r'^[a-zA-Z0-9\.\-_]+$')
 ZERO_IP_PREFIXES = ('0.0.0.0 ', '127.0.0.1 ', '0 ', ':: ')
 INVALID_DOMAINS = frozenset(('localhost', '0.0.0.0'))
-OUTPUT_HOSTS_PATH = 'hosts.txt'
-OUTPUT_DOMAINS_PATH = 'domains.txt'
-BLACKHOLE_IP = '0.0.0.0'
+OUTPUT_BLACKLIST_PATH = 'blacklist.conf'
 DOMAIN_EXTENSIONS_URL = 'https://publicsuffix.org/list/public_suffix_list.dat'
 DOMAIN_EXTENSIONS = None
 
@@ -97,7 +95,28 @@ def parse_host_file(url):
     if not found_domains:
         raise Exception('Couldn\'t find any domains in URL %s' % url)
 
-def output_hosts(ads_lists_ulrs=FIREBOG_CONSERVATIVE_URLS_LIST, output_hosts_path=OUTPUT_HOSTS_PATH, output_domains_path=OUTPUT_DOMAINS_PATH, blackhole_ip=BLACKHOLE_IP):
+def remove_duplicate_domains(domains):
+    top_level_domains = set()
+    top_level_domains_suffixes = set()
+    hosts = set()
+    filtered_hosts = set()
+
+    for domain in domains:
+        if is_domain(domain):
+            top_level_domains.add(domain)
+            top_level_domains_suffixes.add('.%s' % domain)
+        else:
+            hosts.add(domain)
+
+    top_level_domains_suffixes = tuple(top_level_domains_suffixes)
+
+    for host in hosts:
+        if not host.endswith(top_level_domains_suffixes):
+            filtered_hosts.add(host)
+
+    return sorted(list(top_level_domains.union(filtered_hosts)))
+
+def output_hosts(ads_lists_ulrs=FIREBOG_CONSERVATIVE_URLS_LIST, output_blacklist_path=OUTPUT_BLACKLIST_PATH):
     # ads_lists = download_ads_list_urls(ads_lists_ulrs)
     ads_lists = AD_LISTS
     domains = []
@@ -106,17 +125,13 @@ def output_hosts(ads_lists_ulrs=FIREBOG_CONSERVATIVE_URLS_LIST, output_hosts_pat
         print 'Parsing %s' % name
         domains += parse_host_file(url)
 
-    domains = sorted(set(domains))
+    domains = remove_duplicate_domains(domains)
 
-    with open(output_hosts_path, 'w') as hosts_file:
-        with open(output_domains_path, 'w') as domains_file:
-            for domain in domains:
-                if is_domain(domain):
-                    domains_file.write('%s %s\n' % (blackhole_ip, domain))
-                else:
-                    hosts_file.write('%s %s\n' % (blackhole_ip, domain))
+    with open(output_blacklist_path, 'w') as blacklist_file:
+        for domain in domains:
+            blacklist_file.write('server=/%s/\n' % domain)
 
-    print 'Wrote %d host names in %s and %s' % (len(domains), output_hosts_path, output_domains_path)
+    print 'Wrote %d host names in %s' % (len(domains), output_blacklist_path)
 
     return 0
 

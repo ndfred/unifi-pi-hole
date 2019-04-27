@@ -7,9 +7,7 @@ deploy:
   provider: releases
   api_key:
     secure: BUNMxIJpjaWu9Yx2kwbY+cg3taY50oWiJEFaESHdpdgDoNU2Uzkkq+6wL3Gp6YUwXNmo/jSexdiDpwwGI0ouiHDFejLlnwAonY/k6Ae3UyutRxzSD+ehsbdDA60WaDhOowevg+dACuDrkPRK8/V+NjL1iaN6PVg5C7b3VXK1/fGb4erP6vtbevYDW0gkZgnDfLK6s2JySuv0c46eiw1nzhsXdC/0yGR7B0JGyOppmoQGonM3RTb/7uB4M0HIS5Xo+rOnbhG3qfC/0uw/1os69e+92nPcJoZbNR0dW7z4yoVNcfe0V9Kp5RH9bQ5TXpZrlCOlrzCLS3kHUAUyl40N8eHjoofmCdo41ud9+1hi/dTDRy/n84MN84tD9VkIulIsDSHQudsg3rZA7J8lEB7iMmky1CDnt5NoHmZNokO6M1YZLUrai15G7vFO5P+wNzBLJy2chDwK6h7LhX6qINGCw8QDhj5vZM4i3of9Dd8gUrz0UXORnPXMTz+h05KrxE33WTPsXqqS5wrn+V8yTPNK3rESawA11c6v1apr9Mmg/mfsdpsFSRQYyXpTlsxfCYP4va2uoYaq69ffmZ/qLOQmpiXpQFwqdZrJuV6yUHPBI5oSsYeegSIOWb+Iasew9C9X/+DhInIAHpj1wgcjVrX3SzXTAmyB4BZURp9OESk6hHc=
-  file:
-    - hosts.txt
-    - domains.txt
+  file: blacklist.conf
   skip_cleanup: true
   on:
     repo: ndfred/unifi-pi-hole
@@ -17,4 +15,4 @@ deploy:
 before_deploy:
   - git config --local user.name "Frédéric Sagnes"
   - git config --local user.email "frederic.sagnes@gmail.com"
-  - git tag "v0.1.$TRAVIS_BUILD_NUMBER"
+  - git tag "v0.2.$TRAVIS_BUILD_NUMBER"

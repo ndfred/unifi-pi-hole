@@ -65,5 +65,9 @@ class TestDomainParsing(unittest.TestCase):
         self.assertFalse(is_domain('www.google.com'))
         self.assertTrue(is_domain('bbc.co.uk'))
 
+    def test_remove_duplicate_domains(self):
+        self.assertEqual(remove_duplicate_domains(['domain.com', 'sub.domain.com']), ['domain.com'])
+        self.assertEqual(remove_duplicate_domains(['domain.com', 'otherdomain.com']), ['domain.com', 'otherdomain.com'])
+
 if __name__ == '__main__':
     sys.exit(unittest.main())

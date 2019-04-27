@@ -1,4 +1,3 @@
 /build_rules.pyc
 /test_build_rules.pyc
-/hosts.txt
-/domains.txt
+/blacklist.conf
