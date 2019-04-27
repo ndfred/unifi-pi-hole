@@ -2,6 +2,7 @@ language: python
 python: '2.7'
 install: python build_rules.py
 script: python -m unittest test_build_rules
+
 deploy:
   provider: releases
   api_key:
@@ -12,3 +13,8 @@ deploy:
   skip_cleanup: true
   on:
     repo: ndfred/unifi-pi-hole
+
+before_deploy:
+  - git config --local user.name "Frédéric Sagnes"
+  - git config --local user.email "frederic.sagnes@gmail.com"
+  - git tag "v0.1.$TRAVIS_BUILD_NUMBER"
