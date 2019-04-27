@@ -2,7 +2,25 @@
 
 Get the [Pi-hole](https://github.com/pi-hole/pi-hole) project working on my [Unifi Security Gateway](https://www.ui.com/unifi-routing/usg/). Inspired by the [blacklist project](https://github.com/britannic/blacklist).
 
-## Running
+## Installing
+
+⚠️ This is a work in progress, don't follow these instructions yet!
+
+SSH into your USG and run these commands:
+
+	configure
+	delete service dns forwarding blacklist
+	set service dns forwarding blacklist dns-redirect-ip 0.0.0.0
+	set service dns forwarding blacklist domains source unifi-pi-hole url [needs a URL here]
+	set service dns forwarding blacklist domains source unifi-pi-hole description "See https://github.com/ndfred/unifi-pi-hole"
+	set service dns forwarding blacklist domains source unifi-pi-hole prefix 0.0.0.0
+	set service dns forwarding blacklist hosts source unifi-pi-hole url [needs a URL here]
+	set service dns forwarding blacklist hosts source unifi-pi-hole description "See https://github.com/ndfred/unifi-pi-hole"
+	set service dns forwarding blacklist hosts source unifi-pi-hole prefix 0.0.0.0
+	set service dns forwarding blacklist exclude [needs a whitelist host here]
+	commit; save; exit
+
+## Building the hosts list
 
 Clone the repo and run the `build_rules.py` script to download and parse the rules files, and generate the `configure.sh` script:
 
