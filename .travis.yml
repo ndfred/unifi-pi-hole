@@ -9,5 +9,6 @@ deploy:
   file:
     - hosts.txt
     - domains.txt
+  skip_cleanup: true
   on:
     repo: ndfred/unifi-pi-hole
