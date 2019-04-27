@@ -1,4 +1,4 @@
 language: python
 python: "2.7"
 install: python build_rules.py
-script: python -m unittest
+script: python -m unittest test_build_rules
