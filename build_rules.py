@@ -16,13 +16,16 @@ AD_LISTS = [
     ('Disconnect.me Ads', 'https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt'),
     ('Hosts-file.net Ads', 'https://hosts-file.net/ad_servers.txt'),
 ]
-
 DOMAIN_EXPR = re.compile(r'^[a-zA-Z0-9\.\-_]+$')
 ZERO_IP_PREFIXES = ('0.0.0.0 ', '127.0.0.1 ', '0 ', ':: ')
 INVALID_DOMAINS = frozenset(('localhost', '0.0.0.0'))
 
 def download_file(url):
-    return urllib2.urlopen(url).read()
+    request = urllib2.Request(url)
+    # Needed to bypass Cloudflare's bot detection
+    request.add_header('User-Agent', 'curl/7.54.0')
+
+    return urllib2.urlopen(request).read()
 
 def download_ads_list_urls(url):
     return [(list_url, list_url) for list_url in download_file(url).split('\n')]
@@ -65,8 +68,8 @@ def parse_host_file(url):
 def output_rules(configuration_script_path):
     prefix = 'service dns forwarding blacklist'
     domains_buffer = []
-    ads_lists = AD_LISTS
-    # ads_lists = download_ads_list_urls('https://v.firebog.net/hosts/lists.php?type=tick')
+    # ads_lists = AD_LISTS
+    ads_lists = download_ads_list_urls('https://v.firebog.net/hosts/lists.php?type=tick')
 
     for name, url in ads_lists:
         print 'Parsing %s' % name
