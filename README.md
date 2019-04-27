@@ -4,8 +4,6 @@ Get the [Pi-hole](https://github.com/pi-hole/pi-hole) project working on my [Uni
 
 ## Installing
 
-⚠️ This is a work in progress, don't follow these instructions yet!
-
 SSH into your USG and run these commands:
 
 	configure
@@ -13,38 +11,36 @@ SSH into your USG and run these commands:
 	set service dns forwarding blacklist dns-redirect-ip 0.0.0.0
 
 	edit service dns forwarding blacklist domains source unifi-pi-hole
-	set url [needs a URL here]
-	set description "See https://github.com/ndfred/unifi-pi-hole"
+	set url https://github.com/ndfred/unifi-pi-hole/releases/download/v0.1.0/domains.txt
+	set description "Consolidated domains list from https://github.com/ndfred/unifi-pi-hole"
 	set prefix 0.0.0.0
 	top
 
 	edit service dns forwarding blacklist hosts source unifi-pi-hole
-	set url [needs a URL here]
-	set description "See https://github.com/ndfred/unifi-pi-hole"
+	set url https://github.com/ndfred/unifi-pi-hole/releases/download/v0.1.0/hosts.txt
+	set description "Consolidated hosts list from https://github.com/ndfred/unifi-pi-hole"
 	set prefix 0.0.0.0
 	top
 
-	set service dns forwarding blacklist hosts exclude [needs a whitelisted host here]
-	set service dns forwarding blacklist domains exclude [needs a whitelisted domain here]
 	commit; save; exit
+
+I have yet to work on refreshing the list automatically, but this should get you started.
 
 ## Building the hosts list
 
-Clone the repo and run the `build_rules.py` script to download and parse the rules files, and generate the `configure.sh` script:
+Clone the repo and run the `build_rules.py` script to download and parse the rules files, and generate the `hosts.txt` and `domains.txt` files:
 
-    $ python build_rules.py
-    Parsing StevenBlack's Unified Hosts List
-    Parsing MalwareDomains
-    Parsing Cameleon
-    Parsing ZeusTracker
-    Parsing Disconnect.me Tracking
-    Parsing Disconnect.me Ads
-    Parsing Hosts-file.net Ads
-    Wrote 111813 host names in configure.sh
+	$ python build_rules.py
+	Parsing https://hosts-file.net/grm.txt
+	Parsing https://reddestdream.github.io/Projects/MinimalHosts/etc/MinimalHostsBlocker/minimalhosts
+	Parsing https://raw.githubusercontent.com/StevenBlack/hosts/master/data/KADhosts/hosts
+	[...]
+	Parsing https://zerodot1.gitlab.io/CoinBlockerLists/hosts
+	Wrote 735586 host names in hosts.txt and domains.txt
 
-You can then copy the `configure.sh` script to your [Unifi Security Gateway](https://www.ui.com/unifi-routing/usg/) and run it there to filter these domains like a [Pi-hole](https://github.com/pi-hole/pi-hole) would.
+You can then publish the files on a web server or copy them directly to your [Unifi Security Gateway](https://www.ui.com/unifi-routing/usg/).
 
-The lists come from the [Pi-hole installation script](https://github.com/pi-hole/pi-hole/blob/master/automated%20install/basic-install.sh), I may tweak it from [other sources](https://firebog.net) in the future.
+The lists come from the [Firebog website](https://firebog.net), which backs the [Pi-hole setup script](https://github.com/pi-hole/pi-hole/blob/master/automated%20install/basic-install.sh), and aggregates all the safe lists. I might support more advances lists with whitelisting in the future.
 
 ## Testing [![Build Status](https://travis-ci.com/ndfred/unifi-pi-hole.svg?branch=master)](https://travis-ci.com/ndfred/unifi-pi-hole/)
 
