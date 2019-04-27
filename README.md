@@ -53,7 +53,7 @@ Just run the test script:
 
 	OK
 
-# Configuration reference
+## Configuration reference
 
 I SSH-ed into my USG, put myself in configuration mode, and queried completion suggestions to get to the documentation:
 
