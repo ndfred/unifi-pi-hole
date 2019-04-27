@@ -5,21 +5,14 @@ import sys
 import urllib2
 import re
 
-# See appendToListsFile in https://github.com/pi-hole/pi-hole/blob/master/automated%20install/basic-install.sh
-AD_LISTS = [
-    ('StevenBlack\'s Unified Hosts List', 'https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts'),
-    ('MalwareDomains', 'https://mirror1.malwaredomains.com/files/justdomains'),
-    ('Cameleon', 'http://sysctl.org/cameleon/hosts'),
-    ('ZeusTracker', 'https://zeustracker.abuse.ch/blocklist.php?download=domainblocklist'),
-    ('Disconnect.me Tracking', 'https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt'),
-    ('Disconnect.me Ads', 'https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt'),
-    ('Hosts-file.net Ads', 'https://hosts-file.net/ad_servers.txt'),
-]
 # See https://v.firebog.net/hosts/lists.php
 FIREBOG_CONSERVATIVE_URLS_LIST = 'https://v.firebog.net/hosts/lists.php?type=tick'
 DOMAIN_EXPR = re.compile(r'^[a-zA-Z0-9\.\-_]+$')
 ZERO_IP_PREFIXES = ('0.0.0.0 ', '127.0.0.1 ', '0 ', ':: ')
 INVALID_DOMAINS = frozenset(('localhost', '0.0.0.0'))
+OUTPUT_HOSTS_PATH = 'hosts.txt'
+OUTPUT_DOMAINS_PATH = 'domains.txt'
+BLACKHOLE_IP = '0.0.0.0'
 
 def download_file(url):
     request = urllib2.Request(url)
@@ -38,6 +31,13 @@ def cleanup_domain_line(line):
     line = line.strip().replace('\t ', ' ').replace('\t', ' ')
 
     return line
+
+def is_domain(domain):
+    # Take .co.uk into account?
+    if domain.count('.') > 1:
+        return False
+    else:
+        return True
 
 def parse_domain_line(line):
     original_line = line
@@ -73,36 +73,30 @@ def parse_host_file(url):
     if not found_domains:
         raise Exception('Couldn\'t find any domains in that URL')
 
-def output_rules(configuration_script_path):
-    prefix = 'service dns forwarding blacklist'
-    domains_buffer = []
-    # ads_lists = AD_LISTS
-    ads_lists = download_ads_list_urls(FIREBOG_CONSERVATIVE_URLS_LIST)
+def output_hosts(ads_lists_ulrs=FIREBOG_CONSERVATIVE_URLS_LIST, output_hosts_path=OUTPUT_HOSTS_PATH, output_domains_path=OUTPUT_DOMAINS_PATH, blackhole_ip=BLACKHOLE_IP):
+    ads_lists = download_ads_list_urls(ads_lists_ulrs)
+    domains = []
 
     for name, url in ads_lists:
         print 'Parsing %s' % name
+        domains += parse_host_file(url)
 
-        for domain in parse_host_file(url):
-            if domain.count('.') > 1:
-                domains_buffer.append('set %s hosts exclude %s' % (prefix, domain))
-            else:
-                domains_buffer.append('set %s exclude %s' % (prefix, domain))
+    domains = sorted(set(domains))
 
-    domains_buffer = sorted(set(domains_buffer))
+    with open(output_hosts_path, 'w') as hosts_file:
+        with open(output_domains_path, 'w') as domains_file:
+            for domain in domains:
+                if is_domain(domain):
+                    hosts_file.write('%s %s\n' % (blackhole_ip, domain))
+                else:
+                    domains_file.write('%s %s\n' % (blackhole_ip, domain))
 
-    with open(configuration_script_path, 'w') as config_script:
-        config_script.write('configure\n')
-        config_script.write('delete %s\n' % prefix)
-        config_script.write('set %s dns-redirect-ip 0.0.0.0\n' % prefix)
-        config_script.write('\n'.join(domains_buffer))
-        config_script.write('\ncommit; save; exit\n')
-
-    print 'Wrote %d host names in %s' % (len(domains_buffer), configuration_script_path)
+    print 'Wrote %d host names in %s and %s' % (len(domains), output_hosts_path, output_domains_path)
 
     return 0
 
 def main():
-    output_rules('configure.sh')
+    output_hosts()
 
     return 0
 

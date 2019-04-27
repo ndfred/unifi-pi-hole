@@ -30,7 +30,6 @@ class TestDomainParsing(unittest.TestCase):
         self.assertIsNone(parse_domain_line('0.0.0.0 0.0.0.0'))
         self.assertEqual(parse_domain_line('0.0.0.0 1493361689.rsc.cdn77.org'), '1493361689.rsc.cdn77.org')
         self.assertEqual(parse_domain_line('0.0.0.0 123greetings.com  # contains one link to distributor of adware or spyware'), '123greetings.com')
-        
 
     def test_MalwareDomains(self):
         self.assertIsNone(parse_domain_line(''))
@@ -55,6 +54,11 @@ class TestDomainParsing(unittest.TestCase):
         self.assertIsNone(parse_domain_line('# Hosts: 45737'))
         self.assertEqual(parse_domain_line('127.0.0.1	005.free-counter.co.uk'), '005.free-counter.co.uk')
         self.assertEqual(parse_domain_line('127.0.0.1	118d654612df63bc8395-aecfeaabe29a34ea9a877711ec6d8aed.r37.cf2.rackcdn.com'), '118d654612df63bc8395-aecfeaabe29a34ea9a877711ec6d8aed.r37.cf2.rackcdn.com')
+
+    def test_is_domain(self):
+        self.assertTrue(is_domain('google.com'))
+        self.assertFalse(is_domain('www.google.com'))
+        self.assertTrue(is_domain('bbc.co.uk'))
 
 if __name__ == '__main__':
     sys.exit(unittest.main())

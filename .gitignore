@@ -1,3 +1,4 @@
 /build_rules.pyc
 /test_build_rules.pyc
-/configure.sh
+/hosts.txt
+/domains.txt
