@@ -6,7 +6,6 @@ import urllib2
 import re
 
 # See appendToListsFile in https://github.com/pi-hole/pi-hole/blob/master/automated%20install/basic-install.sh
-# Other sources at https://firebog.net
 AD_LISTS = [
     ('StevenBlack\'s Unified Hosts List', 'https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts'),
     ('MalwareDomains', 'https://mirror1.malwaredomains.com/files/justdomains'),
@@ -16,6 +15,8 @@ AD_LISTS = [
     ('Disconnect.me Ads', 'https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt'),
     ('Hosts-file.net Ads', 'https://hosts-file.net/ad_servers.txt'),
 ]
+# See https://v.firebog.net/hosts/lists.php
+FIREBOG_CONSERVATIVE_URLS_LIST = 'https://v.firebog.net/hosts/lists.php?type=tick'
 DOMAIN_EXPR = re.compile(r'^[a-zA-Z0-9\.\-_]+$')
 ZERO_IP_PREFIXES = ('0.0.0.0 ', '127.0.0.1 ', '0 ', ':: ')
 INVALID_DOMAINS = frozenset(('localhost', '0.0.0.0'))
@@ -28,7 +29,7 @@ def download_file(url):
     return urllib2.urlopen(request).read()
 
 def download_ads_list_urls(url):
-    return [(list_url, list_url) for list_url in download_file(url).split('\n')]
+    return [(list_url, list_url) for list_url in download_file(url).split('\n') if list_url]
 
 def cleanup_domain_line(line):
     if '#' in line:
@@ -69,7 +70,7 @@ def output_rules(configuration_script_path):
     prefix = 'service dns forwarding blacklist'
     domains_buffer = []
     # ads_lists = AD_LISTS
-    ads_lists = download_ads_list_urls('https://v.firebog.net/hosts/lists.php?type=tick')
+    ads_lists = download_ads_list_urls(FIREBOG_CONSERVATIVE_URLS_LIST)
 
     for name, url in ads_lists:
         print 'Parsing %s' % name
