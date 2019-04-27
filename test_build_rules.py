@@ -55,6 +55,11 @@ class TestDomainParsing(unittest.TestCase):
         self.assertEqual(parse_domain_line('127.0.0.1	005.free-counter.co.uk'), '005.free-counter.co.uk')
         self.assertEqual(parse_domain_line('127.0.0.1	118d654612df63bc8395-aecfeaabe29a34ea9a877711ec6d8aed.r37.cf2.rackcdn.com'), '118d654612df63bc8395-aecfeaabe29a34ea9a877711ec6d8aed.r37.cf2.rackcdn.com')
 
+    def test_get_domain_extensions(self):
+        domain_extensions = get_domain_extensions()
+        self.assertTrue('com' in domain_extensions)
+        self.assertTrue('co.uk' in domain_extensions)
+
     def test_is_domain(self):
         self.assertTrue(is_domain('google.com'))
         self.assertFalse(is_domain('www.google.com'))

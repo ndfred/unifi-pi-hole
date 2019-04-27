@@ -13,6 +13,16 @@ INVALID_DOMAINS = frozenset(('localhost', '0.0.0.0'))
 OUTPUT_HOSTS_PATH = 'hosts.txt'
 OUTPUT_DOMAINS_PATH = 'domains.txt'
 BLACKHOLE_IP = '0.0.0.0'
+DOMAIN_EXTENSIONS_URL = 'https://publicsuffix.org/list/public_suffix_list.dat'
+DOMAIN_EXTENSIONS = None
+
+def get_domain_extensions():
+    global DOMAIN_EXTENSIONS
+
+    if DOMAIN_EXTENSIONS == None:
+        DOMAIN_EXTENSIONS = frozenset(parse_host_file(DOMAIN_EXTENSIONS_URL))
+
+    return DOMAIN_EXTENSIONS
 
 def download_file(url):
     request = urllib2.Request(url)
@@ -33,11 +43,15 @@ def cleanup_domain_line(line):
     return line
 
 def is_domain(domain):
-    # Take .co.uk into account?
-    if domain.count('.') > 1:
-        return False
-    else:
+    if not '.' in domain:
         return True
+
+    extension = domain[domain.index('.') + 1:]
+
+    if extension in get_domain_extensions():
+        return True
+
+    return False
 
 def parse_domain_line(line):
     original_line = line
@@ -71,7 +85,7 @@ def parse_host_file(url):
             yield domain
 
     if not found_domains:
-        raise Exception('Couldn\'t find any domains in that URL')
+        raise Exception('Couldn\'t find any domains in URL %s' % url)
 
 def output_hosts(ads_lists_ulrs=FIREBOG_CONSERVATIVE_URLS_LIST, output_hosts_path=OUTPUT_HOSTS_PATH, output_domains_path=OUTPUT_DOMAINS_PATH, blackhole_ip=BLACKHOLE_IP):
     ads_lists = download_ads_list_urls(ads_lists_ulrs)
@@ -87,9 +101,9 @@ def output_hosts(ads_lists_ulrs=FIREBOG_CONSERVATIVE_URLS_LIST, output_hosts_pat
         with open(output_domains_path, 'w') as domains_file:
             for domain in domains:
                 if is_domain(domain):
-                    hosts_file.write('%s %s\n' % (blackhole_ip, domain))
-                else:
                     domains_file.write('%s %s\n' % (blackhole_ip, domain))
+                else:
+                    hosts_file.write('%s %s\n' % (blackhole_ip, domain))
 
     print 'Wrote %d host names in %s and %s' % (len(domains), output_hosts_path, output_domains_path)
 
