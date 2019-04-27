@@ -22,6 +22,8 @@ The lists come from the [Pi-hole installation script](https://github.com/pi-hole
 
 ## Testing
 
+[![Build Status](https://travis-ci.com/ndfred/unifi-pi-hole/unifi-pi-hole.png?branch=master)](https://travis-ci.com/ndfred/unifi-pi-hole/)
+
 Just run the test script:
 
 	$ python build_rules_tests.py 
