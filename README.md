@@ -11,13 +11,21 @@ SSH into your USG and run these commands:
 	configure
 	delete service dns forwarding blacklist
 	set service dns forwarding blacklist dns-redirect-ip 0.0.0.0
-	set service dns forwarding blacklist domains source unifi-pi-hole url [needs a URL here]
-	set service dns forwarding blacklist domains source unifi-pi-hole description "See https://github.com/ndfred/unifi-pi-hole"
-	set service dns forwarding blacklist domains source unifi-pi-hole prefix 0.0.0.0
-	set service dns forwarding blacklist hosts source unifi-pi-hole url [needs a URL here]
-	set service dns forwarding blacklist hosts source unifi-pi-hole description "See https://github.com/ndfred/unifi-pi-hole"
-	set service dns forwarding blacklist hosts source unifi-pi-hole prefix 0.0.0.0
-	set service dns forwarding blacklist exclude [needs a whitelist host here]
+
+	edit service dns forwarding blacklist domains source unifi-pi-hole
+	set url [needs a URL here]
+	set description "See https://github.com/ndfred/unifi-pi-hole"
+	set prefix 0.0.0.0
+	top
+
+	edit service dns forwarding blacklist hosts source unifi-pi-hole
+	set url [needs a URL here]
+	set description "See https://github.com/ndfred/unifi-pi-hole"
+	set prefix 0.0.0.0
+	top
+
+	set service dns forwarding blacklist hosts exclude [needs a whitelisted host here]
+	set service dns forwarding blacklist domains exclude [needs a whitelisted domain here]
 	commit; save; exit
 
 ## Building the hosts list
@@ -48,3 +56,45 @@ Just run the test script:
 	Ran 8 tests in 0.001s
 
 	OK
+
+# Configuration reference
+
+I SSH-ed into my USG, put myself in configuration mode, and queried completion suggestions to get to the documentation:
+
+	# set service dns forwarding blacklist
+	Possible completions:
+	  disabled	Option to disable blacklisting
+	  dns-redirect-ip
+	  		Global redirect IP address for hosts and domains (zones)
+	  domains	Configure DNS forwarding blacklist DOMAINS
+	  exclude	domains to GLOBALLY EXCLUDE from DNS forwarding domains and hosts blacklist
+	  hosts		Configure DNS forwarding blacklist hosts (must be fully qualified domain names)
+
+	# set service dns forwarding blacklist domains 
+	Possible completions:
+	  dns-redirect-ip
+	  		Blackhole IP address for domains
+	  exclude	Domains to EXCLUDE from DNS forwarding blacklist
+	  include	Domains to INCLUDE in the DNS forwarding blacklist
+	  source	Blacklisted domains source name
+
+	# set service dns forwarding blacklist hosts
+	Possible completions:
+	  dns-redirect-ip
+	  		Blackhole IP address for hosts - overrides global blackhole IP
+	  exclude	Hosts to EXCLUDE from DNS forwarding blacklist
+	  include	Hosts to INCLUDE in the DNS forwarding blacklist
+	  source	Blacklisted hosts source name
+
+	# set service dns forwarding blacklist domains source unifi-pi-hole
+	Possible completions:
+	  description	Blacklist domain source description
+	  dns-redirect-ip
+	  		Blackhole IP address for a domain source - overrides global blackhole IP
+	  file		A path and filename that provides a list of domains to blacklist, e.g. /config/user-data/hacked_domains.txt
+	  prefix	Prefix string must include all text before the domain name
+	  url		A blacklist source url that provides a list of domain names to block
+
+	# set service dns forwarding blacklist exclude
+	Possible completions:
+	  <text>	domains to GLOBALLY EXCLUDE from DNS forwarding domains and hosts blacklist
