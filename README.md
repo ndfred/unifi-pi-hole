@@ -46,10 +46,10 @@ The lists come from the [Firebog website](https://firebog.net), which backs the 
 
 Just run the test script:
 
-	$ python build_rules_tests.py 
-	........
+	$ python test_build_rules.py 
+	...........
 	----------------------------------------------------------------------
-	Ran 8 tests in 0.001s
+	Ran 11 tests in 0.186s
 
 	OK
 
