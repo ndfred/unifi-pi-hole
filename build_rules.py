@@ -13,7 +13,7 @@ AD_LISTS = [
     # ('ZeusTracker', 'https://zeustracker.abuse.ch/blocklist.php?download=domainblocklist'),
     ('Disconnect.me Tracking', 'https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt'),
     ('Disconnect.me Ads', 'https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt'),
-    ('Hosts-file.net Ads', 'https://hosts-file.net/ad_servers.txt'),
+    # ('Hosts-file.net Ads', 'https://hosts-file.net/ad_servers.txt'),
 ]
 # See https://v.firebog.net/hosts/lists.php
 FIREBOG_CONSERVATIVE_URLS_LIST = 'https://v.firebog.net/hosts/lists.php?type=tick'
