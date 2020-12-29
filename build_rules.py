@@ -8,7 +8,7 @@ import re
 # See appendToListsFile in https://github.com/pi-hole/pi-hole/blob/master/automated%20install/basic-install.sh
 AD_LISTS = [
     ('StevenBlack\'s Unified Hosts List', 'https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts'),
-    ('MalwareDomains', 'https://mirror1.malwaredomains.com/files/justdomains'),
+    # ('MalwareDomains', 'https://mirror1.malwaredomains.com/files/justdomains'),
     ('Cameleon', 'http://sysctl.org/cameleon/hosts'),
     # ('ZeusTracker', 'https://zeustracker.abuse.ch/blocklist.php?download=domainblocklist'),
     ('Disconnect.me Tracking', 'https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt'),
